@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake It Till You... Get Exposed</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e3d5ff 0%, #cbdcff 50%, #fcd6ff 100%);
+            --card-bg: rgba(255, 255, 255, 0.82);
+            --card-border: rgba(255, 255, 255, 0.7);
+            --text-main: #2b233d;
+            --text-muted: #6b637b;
+            --primary-purple: #6c5ce7;
+            --primary-purple-hover: #5b4bc4;
+            --accent-pill: #ffffff;
+            --shadow-soft: 0 10px 30px rgba(108, 92, 231, 0.08);
+            --shadow-pill: 0 4px 15px rgba(0, 0, 0, 0.04);
+            --radius-large: 28px;
+            --radius-pill: 50px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 15px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-large);
+            border: 1px solid var(--card-border);
+            padding: 25px 20px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .app-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-style: italic;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+
+        .app-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            background: var(--accent-pill);
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius-pill);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            cursor: pointer;
+            box-shadow: var(--shadow-pill);
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-purple);
+            color: white;
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
+        }
+
+        .part-panel {
+            display: none;
+        }
+
+        .part-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .task-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 25px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow-pill);
+        }
+
+        .task-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .instruction {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+
+        .timecode-tag {
+            display: inline-block;
+            background: #e0d7ff;
+            color: var(--primary-purple);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 12px;
+            border-radius: 16px;
+        }
+
+        .word-pill {
+            background: white;
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .word-pill:hover {
+            border-color: var(--primary-purple);
+            transform: scale(1.03);
+        }
+
+        .word-pill.selected {
+            background: var(--primary-purple);
+            color: white;
+        }
+
+        .sentence-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .sentence-item {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .gap-input {
+            border: 1px solid #d1c9e8;
+            background: white;
+            border-radius: var(--radius-pill);
+            padding: 6px 14px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s ease;
+            margin: 0 4px;
+            display: inline-block;
+            min-width: 140px;
+        }
+
+        .gap-input:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+        }
+
+        .matching-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .match-card {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 14px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 2px solid transparent;
+            box-shadow: var(--shadow-pill);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .match-card.selected {
+            border-color: var(--primary-purple);
+            background: rgba(108, 92, 231, 0.05);
+        }
+
+        .match-card.matched {
+            background: #e0f8e9;
+            border-color: #2ec4b6;
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .options-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 1px solid #e2dcf0;
+            padding: 8px 16px;
+            border-radius: var(--radius-pill);
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary-purple);
+        }
+
+        .option-btn.selected {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
+
+        .check-btn {
+            width: 100%;
+            background: var(--primary-purple);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: var(--radius-pill);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .check-btn:hover {
+            background: var(--primary-purple-hover);
+            transform: translateY(-1px);
+        }
+
+        .feedback-text {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        details {
+            margin-top: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid #d1c9e8;
+            border-radius: 12px;
+            padding: 12px 16px;
+        }
+
+        summary {
+            font-weight: 700;
+            color: var(--primary-purple);
+            cursor: pointer;
+            outline: none;
+        }
+
+        .answers-list {
+            margin-top: 10px;
+            font-size: 0.88rem;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .speaking-item {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 15px;
+            border: 1px solid #e2dcf0;
+        }
+
+        .speaking-item h4 {
+            font-size: 1rem;
+            color: var(--primary-purple);
+            margin-bottom: 8px;
+        }
+
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+        }
+
+        .check-item {
+            background: white;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .check-item input {
+            accent-color: var(--primary-purple);
+        }
+
+        /* Crossword Styling */
+        .crossword-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .crossword-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .crossword-clue {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            border: 1px solid #e2dcf0;
+        }
+
+        .crossword-clue b {
+            color: var(--primary-purple);
+        }
+
+        @media (max-width: 600px) {
+            .matching-grid {
+                grid-template-columns: 1fr;
+            }
+            .app-container {
+                padding: 15px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="app-header">
+        <h1>Fake It Till You... Get Exposed</h1>
+        <p>Interactive B2 English Lesson • Student Sheet</p>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchPart(1, event)">Part 1</button>
+        <button class="tab-btn" onclick="switchPart(2, event)">Part 2</button>
+        <button class="tab-btn" onclick="switchPart(3, event)">Part 3</button>
+        <button class="tab-btn" onclick="switchPart(4, event)">Part 4</button>
+    </div>
+
+    <!-- PART 1 -->
+    <div id="part1" class="part-panel active">
+        <!-- Task 1 -->
+        <div class="task-card" id="p1t1">
+            <div class="task-title">TASK 1. Listening & Gap-Fill</div>
+            <div class="timecode-tag">⏱️ Timecode: 00:00 - 01:15</div>
+            <div class="instruction">Watch the video segment and click or type the missing words into the gaps.</div>
+            
+            <div class="word-bank" id="p1t1-bank">
+                <span class="word-pill" onclick="selectBankWord(this, 'p1t1')">allegedly</span>
+                <span class="word-pill" onclick="selectBankWord(this, 'p1t1')">getting brand deals</span>
+                <span class="word-pill" onclick="selectBankWord(this, 'p1t1')">built a following</span>
+                <span class="word-pill" onclick="selectBankWord(this, 'p1t1')">committed</span>
+                <span class="word-pill" onclick="selectBankWord(this, 'p1t1')">documenting</span>
+                <span class="word-pill" onclick="selectBankWord(this, 'p1t1')">scamming</span>
+            </div>
+
+            <div class="sentence-list">
+                <div class="sentence-item">1. What do you mean this girl was <input type="text" class="gap-input" data-ans="allegedly" onclick="fillGap(this, 'p1t1')"> pretending to be a PA student?</div>
+                <div class="sentence-item">2. ...documenting her journey, <input type="text" class="gap-input" data-ans="getting brand deals" onclick="fillGap(this, 'p1t1')"> and all.</div>
+                <div class="sentence-item">3. She really <input type="text" class="gap-input" data-ans="built a following" onclick="fillGap(this, 'p1t1')"> around this lie.</div>
+                <div class="sentence-item">4. And she really <input type="text" class="gap-input" data-ans="committed" onclick="fillGap(this, 'p1t1')"> to the bit, y'all.</div>
+                <div class="sentence-item">5. For roughly the past two years, she has been <input type="text" class="gap-input" data-ans="documenting" onclick="fillGap(this, 'p1t1')"> what she claimed was her journey.</div>
+                <div class="sentence-item">6. This whole situation taught me that I am not <input type="text" class="gap-input" data-ans="scamming" onclick="fillGap(this, 'p1t1')"> nearly enough.</div>
+            </div>
+
+            <button class="check-btn" onclick="checkGaps('p1t1')">Check Answers</button>
+            <div class="feedback-text" id="p1t1-fb"></div>
+
+            <details>
+                <summary>Show answers</summary>
+                <div class="answers-list">
+                    1. allegedly<br>
+                    2. getting brand deals<br>
+                    3. built a following<br>
+                    4. committed<br>
+                    5. documenting<br>
+                    6. scamming
+                </div>
+            </details>
+        </div>
+
+        <!-- Task 2 -->
+        <div class="task-card" id="p1t2">
+            <div class="task-title">TASK 2. Vocabulary Matching</div>
+            <div class="instruction">Match the chunk to its meaning. Click a phrase on the left, then its match on the right.</div>
+            
+            <div class="matching-grid">
+                <div id="p1t2-left" style="display:flex; flex-direction:column; gap:8px;">
+                    <div class="match-card" data-id="1" onclick="selectMatch(this, 'left')">build a following</div>
+                    <div class="match-card" data-id="2" onclick="selectMatch(this, 'left')">get brand deals</div>
+                    <div class="match-card" data-id="3" onclick="selectMatch(this, 'left')">allegedly</div>
+                    <div class="match-card" data-id="4" onclick="selectMatch(this, 'left')">commit to the bit</div>
+                    <div class="match-card" data-id="5" onclick="selectMatch(this, 'left')">document your journey</div>
+                    <div class="match-card" data-id="6" onclick="selectMatch(this, 'left')">scam</div>
+                    <div class="match-card" data-id="7" onclick="selectMatch(this, 'left')">pet peeve</div>
+                    <div class="match-card" data-id="8" onclick="selectMatch(this, 'left')">be late to the tea</div>
+                </div>
+                <div id="p1t2-right" style="display:flex; flex-direction:column; gap:8px;">
+                    <div class="match-card" data-id="3" onclick="selectMatch(this, 'right')">якобы, по утверждениям</div>
+                    <div class="match-card" data-id="1" onclick="selectMatch(this, 'right')">набрать аудиторию / подписчиков</div>
+                    <div class="match-card" data-id="6" onclick="selectMatch(this, 'right')">мошенничать, обманывать</div>
+                    <div class="match-card" data-id="2" onclick="selectMatch(this, 'right')">получать рекламные контракты</div>
+                    <div class="match-card" data-id="8" onclick="selectMatch(this, 'right')">опоздать к горячим сплетням</div>
+                    <div class="match-card" data-id="4" onclick="selectMatch(this, 'right')">доводить роль до конца</div>
+                    <div class="match-card" data-id="7" onclick="selectMatch(this, 'right')">то, что бесит больше всего</div>
+                    <div class="match-card" data-id="5" onclick="selectMatch(this, 'right')">вести блог о своем пути</div>
+                </div>
+            </div>
+            <div class="feedback-text" id="p1t2-fb"></div>
+
+            <details>
+                <summary>Show answers</summary>
+                <div class="answers-list">
+                    • <b>build a following</b> = набрать аудиторию / подписчиков<br>
+                    • <b>get brand deals</b> = получать рекламные контракты<br>
+                    • <b>allegedly</b> = якобы, по утверждениям<br>
+                    • <b>commit to the bit</b> = доводить роль до конца<br>
+                    • <b>document your journey</b> = вести блог о своем пути<br>
+                    • <b>scam</b> = мошенничать, обманывать<br>
+                    • <b>pet peeve</b> = то, что бесит больше всего<br>
+                    • <b>be late to the tea</b> = опоздать к горячим сплетням
+                </div>
+            </details>
+        </div>
+
+        <!-- Task 3 -->
+        <div class="task-card" id="p1t3">
+            <div class="task-title">TASK 3. Comprehension Check</div>
+            <div class="instruction">True, False or Not Stated? Read carefully 🕵️</div>
+            
+            <div class="sentence-list">
+                <div class="sentence-item">
+                    1. The speaker gets annoyed when she misses out on gossip.
+                    <div class="options-group" data-ans="True">
+                        <button class="option-btn" onclick="selectOption(this)">True</button>
+                        <button class="option-btn" onclick="selectOption(this)">False</button>
+                        <button class="option-btn" onclick="selectOption(this)">Not Stated</button>
+                    </div>
+                </div>
+                <div class="sentence-item">
+                    2. Angel claimed she was studying at Duke University.
+                    <div class="options-group" data-ans="True">
+                        <button class="option-btn" onclick="selectOption(this)">True</button>
+                        <button class="option-btn" onclick="selectOption(this)">False</button>
+                        <button class="option-btn" onclick="selectOption(this)">Not Stated</button>
+                    </div>
+                </div>
+                <div class="sentence-item">
+                    3. Angel only posted photos and never made any videos about her "studies".
+                    <div class="options-group" data-ans="False">
+                        <button class="option-btn" onclick="selectOption(this)">True</button>
+                        <button class="option-btn" onclick="selectOption(this)">False</button>
+                        <button class="option-btn" onclick="selectOption(this)">Not Stated</button>
+                    </div>
+                </div>
+                <div class="sentence-item">
+                    4. Angel reportedly worked with brands like Sephora and La Roche-Posay.
+                    <div class="options-group" data-ans="True">
+                        <button class="option-btn" onclick="selectOption(this)">True</button>
+                        <button class="option-btn" onclick="selectOption(this)">False</button>
+                        <button class="option-btn" onclick="selectOption(this)">Not Stated</button>
+                    </div>
+                </div>
+                <div class="sentence-item">
+                    5. Duke PA students remember seeing Angel at program events.
+                    <div class="options-group" data-ans="False">
+                        <button class="option-btn" onclick="selectOption(this)">True</button>
+                        <button class="option-btn" onclick="selectOption(this)">False</button>
+                        <button class="option-btn" onclick="selectOption(this)">Not Stated</button>
+                    </div>
+                </div>
+                <div class="sentence-item">
+                    6. Brands paid Angel more than $100,000 in total.
+                    <div class="options-group" data-ans="Not Stated">
+                        <button class="option-btn" onclick="selectOption(this)">True</button>
+                        <button class="option-btn" onclick="selectOption(this)">False</button>
+                        <button class="option-btn" onclick="selectOption(this)">Not Stated</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="check-btn" onclick="checkOptions('p1t3')">Check Answers</button>
+            <div class="feedback-text" id="p1t3-fb"></div>
+
+            <details>
+                <summary>Show answers</summary>
+                <div class="answers-list">
+                    1. True<br>
+                    2. True<br>
+                    3. False<br>
+                    4. True<br>
+                    5. False<br>
+                    6. Not Stated
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <!-- PART 2 -->
+    <div id="part2" class="part-panel">
+        <!-- Task 1 -->
+        <div class="task-card" id="p2t1">
+            <div class="task-title">TASK 1. Listen and Fill in the Blanks 🎧</div>
+            <div class="timecode-tag">⏱️ Timecode: 01:15 - 02:40</div>
+            <div class="instruction">Watch the video segment and type the missing chunks into the gaps. Pay attention to the verb forms!</div>
+            
+            <div class="sentence-list">
+                <div class="sentence-item">
+                    1. Angel <input type="text" class="gap-input" style="width:180px;" data-ans="took it a step further"> <i>(take it a step further)</i> and posted graduation photos outside Duke Chapel.
+                </div>
+                <div class="sentence-item">
+                    2. <input type="text" class="gap-input" style="width:120px;" data-ans="Mind you|mind you"> <i>(mind you)</i>, she's nowhere in the class photos.
+                </div>
+                <div class="sentence-item">
+                    3. A fake graduation? <input type="text" class="gap-input" style="width:230px;" data-ans="You can't make this stuff up|you can't make this stuff up"> <i>(you can't make this stuff up)</i>.
+                </div>
+                <div class="sentence-item">
+                    4. But hold on, y'all, <input type="text" class="gap-input" style="width:140px;" data-ans="it gets better"> <i>(it gets better)</i>.
+                </div>
+                <div class="sentence-item">
+                    5. How could she be a PA student but also <input type="text" class="gap-input" style="width:150px;" data-ans="do reality TV|doing reality TV"> <i>(do reality TV)</i> at the same time?
+                </div>
+                <div class="sentence-item">
+                    6. And then before she <input type="text" class="gap-input" style="width:140px;" data-ans="got exposed"> <i>(get exposed)</i>, she was talking about graduating soon.
+                </div>
+                <div class="sentence-item">
+                    7. She <input type="text" class="gap-input" style="width:150px;" data-ans="had the nerve to"> <i>(have the nerve to)</i> talk about how difficult it had been.
+                </div>
+            </div>
+
+            <button class="check-btn" onclick="checkTextGaps('p2t1')">Check Answers</button>
+            <div class="feedback-text" id="p2t1-fb"></div>
+
+            <details>
+                <summary>Show answers</summary>
+                <div class="answers-list">
+                    1. took it a step further<br>
+                    2. Mind you<br>
+                    3. You can't make this stuff up<br>
+                    4. it gets better<br>
+                    5. do reality TV<br>
+                    6. got exposed<br>
+                    7. had the nerve to
+                </div>
+            </details>
+        </div>
+
+        <!-- Task 2 Drag and Drop / Word Choice -->
+        <div class="task-card" id="p2t2">
+            <div class="task-title">TASK 2. Drag & Drop: Complete the Sentences 🧩</div>
+            <div class="instruction">Click or drag the correct phrase from the bank to fill in each sentence gap.</div>
+
+            <div class="word-bank" id="p2t2-bank">
+                <span class="word-pill" onclick="selectBankWord(this, 'p2t2')">you can't make this stuff up</span>
+                <span class="word-pill" onclick="selectBankWord(this, 'p2t2')">Mind you</span>
+                <span class="word-pill" onclick="selectBankWord(this, 'p2t2')">took it a step further</span>
+                <span class="word-pill" onclick="selectBankWord(this, 'p2t2')">got exposed</span>
+                <span class="word-pill" onclick="selectBankWord(this, 'p2t2')">did reality TV</span>
+                <span class="word-pill" onclick="selectBankWord(this, 'p2t2')">had the nerve to</span>
+                <span class="word-pill" onclick="selectBankWord(this, 'p2t2')">it gets better</span>
+            </div>
+
+            <div class="sentence-list">
+                <div class="sentence-item">
+                    1. He lied about his degree for ten years, and nobody ever checked. Honestly, <input type="text" class="gap-input" style="width:210px;" data-ans="you can't make this stuff up" onclick="fillGap(this, 'p2t2')">!
+                </div>
+                <div class="sentence-item">
+                    2. The film is slow. <input type="text" class="gap-input" style="width:110px;" data-ans="Mind you" onclick="fillGap(this, 'p2t2')">, I only saw the first half, so I might be wrong.
+                </div>
+                <div class="sentence-item">
+                    3. First he lied on his CV. Then he <input type="text" class="gap-input" style="width:180px;" data-ans="took it a step further" onclick="fillGap(this, 'p2t2')"> and forged a reference letter.
+                </div>
+                <div class="sentence-item">
+                    4. He kept bragging about his honesty until his own emails were leaked. That's how he <input type="text" class="gap-input" style="width:130px;" data-ans="got exposed" onclick="fillGap(this, 'p2t2')">.
+                </div>
+                <div class="sentence-item">
+                    5. After the break-up she <input type="text" class="gap-input" style="width:130px;" data-ans="did reality TV" onclick="fillGap(this, 'p2t2')"> to win her ex back on a dating show.
+                </div>
+                <div class="sentence-item">
+                    6. He ate the whole cake and then <input type="text" class="gap-input" style="width:150px;" data-ans="had the nerve to" onclick="fillGap(this, 'p2t2')"> ask for his money back.
+                </div>
+                <div class="sentence-item">
+                    7. Wait, <input type="text" class="gap-input" style="width:120px;" data-ans="it gets better" onclick="fillGap(this, 'p2t2')">: the hotel had no booking in my name either.
+                </div>
+            </div>
+
+            <button class="check-btn" onclick="checkTextGaps('p2t2')">Check Answers</button>
+            <div class="feedback-text" id="p2t2-fb"></div>
+
+            <details>
+                <summary>Show answers</summary>
+                <div class="answers-list">
+                    1. you can't make this stuff up<br>
+                    2. Mind you<br>
+                    3. took it a step further<br>
+                    4. got exposed<br>
+                    5. did reality TV<br>
+                    6. had the nerve to<br>
+                    7. it gets better
+                </div>
+            </details>
+        </div>
+
+        <!-- Task 3 -->
+        <div class="task-card" id="p2t3">
+            <div class="task-title">TASK 3. Comprehension Check</div>
+            <div class="instruction">Show you got the story. Only one answer is right.</div>
+
+            <div class="sentence-list">
+                <div class="sentence-item">
+                    1. Where did Angel pose for her graduation photos?
+                    <div class="options-group" data-ans="B">
+                        <button class="option-btn" onclick="selectOption(this)" data-val="A">A. In front of the Duke library</button>
+                        <button class="option-btn" onclick="selectOption(this)" data-val="B">B. Outside Duke Chapel</button>
+                        <button class="option-btn" onclick="selectOption(this)" data-val="C">C. At a Duke football game</button>
+                    </div>
+                </div>
+                <div class="sentence-item">
+                    2. Why does the speaker find Angel's choice of university ironic?
+                    <div class="options-group" data-ans="B">
+                        <button class="option-btn" onclick="selectOption(this)" data-val="A">A. Duke is the cheapest PA school</button>
+                        <button class="option-btn" onclick="selectOption(this)" data-val="B">B. Duke is the birthplace of the PA profession</button>
+                        <button class="option-btn" onclick="selectOption(this)" data-val="C">C. Duke has no PA program</button>
+                    </div>
+                </div>
+                <div class="sentence-item">
+                    3. Which detail suggests the graduation was fake?
+                    <div class="options-group" data-ans="C">
+                        <button class="option-btn" onclick="selectOption(this)" data-val="A">A. Angel's cap was the wrong colour</button>
+                        <button class="option-btn" onclick="selectOption(this)" data-val="B">B. Her parents didn't come</button>
+                        <button class="option-btn" onclick="selectOption(this)" data-val="C">C. She wasn't in class photos & name wasn't called</button>
+                    </div>
+                </div>
+                <div class="sentence-item">
+                    4. What does the speaker find suspicious about Angel's TV appearance?
+                    <div class="options-group" data-ans="A">
+                        <button class="option-btn" onclick="selectOption(this)" data-val="A">A. She was described as PA student while on Temptation Island</button>
+                        <button class="option-btn" onclick="selectOption(this)" data-val="B">B. She lost the competition</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="check-btn" onclick="checkOptions('p2t3')">Check Answers</button>
+            <div class="feedback-text" id="p2t3-fb"></div>
+
+            <details>
+                <summary>Show answers</summary>
+                <div class="answers-list">
+                    1. B. Outside Duke Chapel<br>
+                    2. B. Duke is the birthplace of the PA profession<br>
+                    3. C. She wasn't in class photos & name wasn't called<br>
+                    4. A. She was described as PA student while on Temptation Island
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <!-- PART 3 -->
+    <div id="part3" class="part-panel">
+        <!-- Task 1 -->
+        <div class="task-card" id="p3t1">
+            <div class="task-title">TASK 1. Watch & Type 📝</div>
+            <div class="timecode-tag">⏱️ Timecode: 02:40 - END</div>
+            <div class="instruction">Watch the final video segment and fill in the missing details based on what you hear.</div>
+
+            <div class="sentence-list">
+                <div class="sentence-item">1. She talked about how hard it was to <input type="text" class="gap-input" style="width:170px;" data-ans="finish|get through|balance work with"> PA school.</div>
+                <div class="sentence-item">2. <input type="text" class="gap-input" style="width:140px;" data-ans="Maintaining"> a regular job while doing PA school is unheard of.</div>
+                <div class="sentence-item">3. PA school is really <input type="text" class="gap-input" style="width:120px;" data-ans="grueling"> and takes a lot of your time.</div>
+                <div class="sentence-item">4. Her accounts eventually <input type="text" class="gap-input" style="width:140px;" data-ans="went private"> or disappeared.</div>
+                <div class="sentence-item">5. Balancing that with a 9-to-5 is <input type="text" class="gap-input" style="width:130px;" data-ans="unheard of">.</div>
+            </div>
+
+            <button class="check-btn" onclick="checkTextGaps('p3t1')">Check Answers</button>
+            <div class="feedback-text" id="p3t1-fb"></div>
+
+            <details>
+                <summary>Show answers</summary>
+                <div class="answers-list">
+                    1. finish / get through / balance work with<br>
+                    2. Maintaining<br>
+                    3. grueling<br>
+                    4. went private<br>
+                    5. unheard of
+                </div>
+            </details>
+        </div>
+
+        <!-- Task 2 -->
+        <div class="task-card" id="p3t2">
+            <div class="task-title">TASK 2. Comprehension Check</div>
+            <div class="instruction">True, False or Not Stated? 👂</div>
+
+            <div class="sentence-list">
+                <div class="sentence-item">
+                    1. Working a regular job during PA school is common.
+                    <div class="options-group" data-ans="False">
+                        <button class="option-btn" onclick="selectOption(this)">True</button>
+                        <button class="option-btn" onclick="selectOption(this)">False</button>
+                        <button class="option-btn" onclick="selectOption(this)">Not Stated</button>
+                    </div>
+                </div>
+                <div class="sentence-item">
+                    2. After people started asking questions, Angel kept her accounts fully public.
+                    <div class="options-group" data-ans="False">
+                        <button class="option-btn" onclick="selectOption(this)">True</button>
+                        <button class="option-btn" onclick="selectOption(this)">False</button>
+                        <button class="option-btn" onclick="selectOption(this)">Not Stated</button>
+                    </div>
+                </div>
+                <div class="sentence-item">
+                    3. The speaker thinks PA school is very demanding.
+                    <div class="options-group" data-ans="True">
+                        <button class="option-btn" onclick="selectOption(this)">True</button>
+                        <button class="option-btn" onclick="selectOption(this)">False</button>
+                        <button class="option-btn" onclick="selectOption(this)">Not Stated</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="check-btn" onclick="checkOptions('p3t2')">Check Answers</button>
+            <div class="feedback-text" id="p3t2-fb"></div>
+
+            <details>
+                <summary>Show answers</summary>
+                <div class="answers-list">
+                    1. False<br>
+                    2. False<br>
+                    3. True
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <!-- PART 4 -->
+    <div id="part4" class="part-panel">
+        <div class="task-card">
+            <div class="task-title">Target Phrases Tracker</div>
+            <div class="instruction">Check off phrases as you use them in speaking!</div>
+            <div class="checklist-grid">
+                <label class="check-item"><input type="checkbox"> build a following</label>
+                <label class="check-item"><input type="checkbox"> take it a step further</label>
+                <label class="check-item"><input type="checkbox"> balance work with...</label>
+                <label class="check-item"><input type="checkbox"> unheard of</label>
+                <label class="check-item"><input type="checkbox"> grueling</label>
+                <label class="check-item"><input type="checkbox"> go private</label>
+                <label class="check-item"><input type="checkbox"> you can't make this stuff up</label>
+                <label class="check-item"><input type="checkbox"> it gets better</label>
+                <label class="check-item"><input type="checkbox"> have the nerve to...</label>
+                <label class="check-item"><input type="checkbox"> maintain a regular job</label>
+                <label class="check-item"><input type="checkbox"> get exposed</label>
+                <label class="check-item"><input type="checkbox"> get brand deals</label>
+                <label class="check-item"><input type="checkbox"> mind you...</label>
+                <label class="check-item"><input type="checkbox"> do reality TV</label>
+            </div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">SPEAKING ACTIVITIES 🗣️</div>
+            <div class="instruction">Complete the following 5 interactive speaking tasks:</div>
+
+            <!-- Activity 1 -->
+            <div class="speaking-item">
+                <h4>Activity 1: Press Office Interview (Role-play)</h4>
+                <p>You are a real Duke PA student. An investigative reporter interviews you about Angel's fake story. Answer the questions using target vocabulary:</p>
+                <p style="margin-top:6px; font-size:0.88rem; color:var(--text-muted);">
+                    • "When did you first notice something was off?"<br>
+                    • "How realistic was her content about the grueling routine?"<br>
+                    • "What advice would you give followers who get scammed by influencers?"
+                </p>
+            </div>
+
+            <!-- Activity 2 -->
+            <div class="speaking-item">
+                <h4>Activity 2: Debate — "Fake It Till You Make It"</h4>
+                <p>Is pretending to be qualified ever acceptable in modern social media culture?</p>
+                <p style="margin-top:6px; font-size:0.88rem; color:var(--text-muted);">
+                    <b>Speaker A:</b> Argue that self-promotion requires exaggeration and fake confidence until real skills follow.<br>
+                    <b>Speaker B:</b> Argue that faking qualifications in medical/legal/educational spheres is dangerous fraud.
+                </p>
+            </div>
+
+            <!-- Activity 3 -->
+            <div class="speaking-item">
+                <h4>Activity 3: Ethical Dilemma Cards</h4>
+                <p>Pick one scenario and explain how you would react:</p>
+                <p style="margin-top:6px; font-size:0.88rem; color:var(--text-muted);">
+                    <b>Card A:</b> You discover your colleague lied on their CV about having a Master's degree, but they do a great job. Do you expose them?<br>
+                    <b>Card B:</b> A friend is buying fake followers to get brand deals. They ask for your help filming content. What do you say?
+                </p>
+            </div>
+
+            <!-- Activity 4 -->
+            <div class="speaking-item">
+                <h4>Activity 4: Two Truths and a Lie (Influencer Edition)</h4>
+                <p>Tell your partner 3 stories about something impressive you or someone you know did (2 true, 1 completely made up using target phrases like <i>"you can't make this stuff up"</i> or <i>"took it a step further"</i>). Your partner must guess the fake story!</p>
+            </div>
+
+            <!-- Activity 5 -->
+            <div class="speaking-item">
+                <h4>Activity 5: Crisis PR Strategy Meeting</h4>
+                <p>Imagine you are the PR team for a cosmetic brand (e.g. Sephora) that sponsored Angel. Draft a 1-minute public statement explaining how you got scammed and what steps you are taking to protect consumers.</p>
+            </div>
+        </div>
+
+        <!-- FINAL VOCABULARY TEST / CROSSWORD -->
+        <div class="task-card" id="final-test">
+            <div class="task-title">FINAL REVISION: Target Vocabulary Challenge 🧩</div>
+            <div class="instruction">Complete the clues below to test your mastery of all key phrases from this lesson!</div>
+
+            <div class="crossword-container">
+                <div class="crossword-list">
+                    <div class="crossword-clue">
+                        <b>1.</b> Extremely tiring and demanding (adj.): 
+                        <input type="text" class="gap-input" style="width:140px;" data-ans="grueling">
+                    </div>
+                    <div class="crossword-clue">
+                        <b>2.</b> Completely unprecedented or shocking (adj.): 
+                        <input type="text" class="gap-input" style="width:140px;" data-ans="unheard of">
+                    </div>
+                    <div class="crossword-clue">
+                        <b>3.</b> To gain a large audience/subscribers on social media: 
+                        <input type="text" class="gap-input" style="width:180px;" data-ans="build a following">
+                    </div>
+                    <div class="crossword-clue">
+                        <b>4.</b> To secure paid commercial partnerships: 
+                        <input type="text" class="gap-input" style="width:160px;" data-ans="get brand deals">
+                    </div>
+                    <div class="crossword-clue">
+                        <b>5.</b> To escalate an action or pretend even more intensely: 
+                        <input type="text" class="gap-input" style="width:190px;" data-ans="take it a step further">
+                    </div>
+                    <div class="crossword-clue">
+                        <b>6.</b> An idiom used when a story is so unbelievable it seems scripted: 
+                        <input type="text" class="gap-input" style="width:230px;" data-ans="you can't make this stuff up">
+                    </div>
+                    <div class="crossword-clue">
+                        <b>7.</b> To have the audacity or boldness to do something shameless: 
+                        <input type="text" class="gap-input" style="width:170px;" data-ans="have the nerve to">
+                    </div>
+                    <div class="crossword-clue">
+                        <b>8.</b> To be revealed or caught lying publicly: 
+                        <input type="text" class="gap-input" style="width:140px;" data-ans="get exposed">
+                    </div>
+                    <div class="crossword-clue">
+                        <b>9.</b> To change social media accounts from public to restricted: 
+                        <input type="text" class="gap-input" style="width:130px;" data-ans="go private">
+                    </div>
+                    <div class="crossword-clue">
+                        <b>10.</b> "Keep in mind that..." / conversational transition: 
+                        <input type="text" class="gap-input" style="width:120px;" data-ans="mind you">
+                    </div>
+                </div>
+
+                <button class="check-btn" onclick="checkTextGaps('final-test')">Check Final Test Answers</button>
+                <div class="feedback-text" id="final-test-fb"></div>
+
+                <details>
+                    <summary>Show answers</summary>
+                    <div class="answers-list">
+                        1. grueling<br>
+                        2. unheard of<br>
+                        3. build a following<br>
+                        4. get brand deals<br>
+                        5. take it a step further<br>
+                        6. you can't make this stuff up<br>
+                        7. have the nerve to<br>
+                        8. get exposed<br>
+                        9. go private<br>
+                        10. mind you
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchPart(partNum, evt) {
+        document.querySelectorAll('.part-panel').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(`part${partNum}`).classList.add('active');
+        if(evt && evt.target) {
+            evt.target.classList.add('active');
+        }
+    }
+
+    let selectedWord = null;
+
+    function selectBankWord(el, taskId) {
+        document.querySelectorAll(`#${taskId}-bank .word-pill`).forEach(w => w.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedWord = el.innerText;
+    }
+
+    function fillGap(inputEl, taskId) {
+        if (selectedWord) {
+            inputEl.value = selectedWord;
+            const bankWords = document.querySelectorAll(`#${taskId}-bank .word-pill`);
+            bankWords.forEach(w => {
+                if(w.innerText === selectedWord) w.style.opacity = '0.3';
+            });
+            selectedWord = null;
+        } else {
+            inputEl.value = '';
+        }
+    }
+
+    function checkGaps(taskId) {
+        const container = document.getElementById(taskId);
+        const inputs = container.querySelectorAll('.gap-input');
+        let correct = 0;
+
+        inputs.forEach(input => {
+            if (input.value.trim().toLowerCase() === input.dataset.ans.toLowerCase()) {
+                input.style.borderColor = '#2ec4b6';
+                input.style.backgroundColor = '#e0f8e9';
+                correct++;
+            } else {
+                input.style.borderColor = '#e74c3c';
+                input.style.backgroundColor = '#fceae9';
+            }
+        });
+
+        const fb = document.getElementById(`${taskId}-fb`);
+        fb.innerText = `You got ${correct} out of ${inputs.length} correct!`;
+        fb.style.color = correct === inputs.length ? '#2ec4b6' : '#e74c3c';
+    }
+
+    function checkTextGaps(taskId) {
+        const container = document.getElementById(taskId);
+        const inputs = container.querySelectorAll('.gap-input');
+        let correct = 0;
+
+        inputs.forEach(input => {
+            const allowed = input.dataset.ans.split('|').map(a => a.toLowerCase().trim());
+            const userVal = input.value.toLowerCase().trim();
+
+            if (allowed.includes(userVal)) {
+                input.style.borderColor = '#2ec4b6';
+                input.style.backgroundColor = '#e0f8e9';
+                correct++;
+            } else {
+                input.style.borderColor = '#e74c3c';
+                input.style.backgroundColor = '#fceae9';
+            }
+        });
+
+        const fb = document.getElementById(`${taskId}-fb`);
+        fb.innerText = `Score: ${correct} / ${inputs.length}`;
+        fb.style.color = correct === inputs.length ? '#2ec4b6' : '#e74c3c';
+    }
+
+    let selectedLeft = null;
+    let selectedRight = null;
+
+    function selectMatch(el, side) {
+        if (el.classList.contains('matched')) return;
+
+        if (side === 'left') {
+            document.querySelectorAll('#p1t2-left .match-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedLeft = el;
+        } else {
+            document.querySelectorAll('#p1t2-right .match-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedRight = el;
+        }
+
+        if (selectedLeft && selectedRight) {
+            if (selectedLeft.dataset.id === selectedRight.dataset.id) {
+                selectedLeft.classList.add('matched');
+                selectedRight.classList.add('matched');
+                selectedLeft.classList.remove('selected');
+                selectedRight.classList.remove('selected');
+                selectedLeft = null;
+                selectedRight = null;
+            } else {
+                setTimeout(() => {
+                    selectedLeft.classList.remove('selected');
+                    selectedRight.classList.remove('selected');
+                    selectedLeft = null;
+                    selectedRight = null;
+                }, 400);
+            }
+        }
+    }
+
+    function selectOption(btn) {
+        const parent = btn.parentElement;
+        parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+    }
+
+    function checkOptions(taskId) {
+        const container = document.getElementById(taskId);
+        const groups = container.querySelectorAll('.options-group');
+        let correct = 0;
+
+        groups.forEach(group => {
+            const selected = group.querySelector('.option-btn.selected');
+            const targetAns = group.dataset.ans;
+
+            if (selected) {
+                const userVal = selected.dataset.val || selected.innerText.trim();
+                if (userVal === targetAns || selected.innerText.trim() === targetAns) {
+                    selected.style.background = '#2ec4b6';
+                    selected.style.color = 'white';
+                    correct++;
+                } else {
+                    selected.style.background = '#e74c3c';
+                    selected.style.color = 'white';
+                }
+            }
+        });
+
+        const fb = document.getElementById(`${taskId}-fb`);
+        fb.innerText = `Result: ${correct} / ${groups.length}`;
+        fb.style.color = correct === groups.length ? '#2ec4b6' : '#e74c3c';
+    }
+</script>
+
+</body>
+</html>
